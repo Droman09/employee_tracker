@@ -129,8 +129,8 @@ function addRole() {
         {
             name: "salary",
             type: "input",
-            message: "Salary of new Role",
-            validate: validateNum()
+            message: "Salary of new Role"
+            // validate: validateNum()
         },
         {
             name: "department_id",
@@ -180,13 +180,15 @@ function addEmp() {
                 choices: managerList()
             }
         ]).then((answer) => {
+            const roleId = roleList().indexOf(answer.newRole) + 1
+            const managerId = managerList().indexOf(answer.assignMan) + 1
             const query = "INSERT INTO employee SET ?";
             connection.query(query,
                 {
                     first_name: answer.firstName,
                     last_name: answer.lastName,
-                    role_id: answer.newRole,
-                    manager_id: answer.assignMan
+                    role_id: roleId,
+                    manager_id: managerId
                 },
                 err => {
                     if (err) throw err;
@@ -225,10 +227,11 @@ function updateEmp() {
                     choices: roleList()
                 }
             ]).then(answer => {
+                const roleId = roleList().indexOf(answer.newRole) + 1
                 const query2 = "UPDATE employee SET ? WHERE ?"
                 connection.query(query2,
                     [{
-                        role_id: answer.newRole
+                        role_id: roleId
                     }, {
                         last_name: answer.employees
                     }],
@@ -264,7 +267,7 @@ function roleList() {
     connection.query(query, (err, res) => {
         if (err) throw err;
         res.forEach(index => {
-            roleArr.push(index.id)
+            roleArr.push(index.title)
         })
 
     })
@@ -273,11 +276,11 @@ function roleList() {
 
 var managerArr = ["None"];
 function managerList() {
-    const query = "SELECT * FROM employee WHERE manager_id IS NOT NULL"
+    const query = "SELECT *, CONCAT (first_name,' ', last_name) AS name FROM employee WHERE manager_id IS NOT NULL;"
     connection.query(query, (err, res) => {
         if (err) throw err;
         res.forEach(index => {
-            managerArr.push(index.manager_id)
+            managerArr.push(index.name)
         })
     })
     return managerArr
