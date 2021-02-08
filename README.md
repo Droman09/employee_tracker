@@ -11,10 +11,27 @@
 
 ## Description
 
+Thid application will allow a buisness owner to view and manage the departments, roles, and employees in my company
+So that the owner can organize and plan thier business.
+
+In the command-line users are allowed to add departments, roles, employees, view departments, roles, employees and update employee roles.
+
+In the near future, the user will be able to:
+
+Update employee managers
+
+View employees by manager
+
+Delete departments, roles, and employees
+
+View the total utilized budget of a department.
 
 
 ## Installation
  `package.json` is a document that would let you know what dependencies is required to make this app work. On your terminal, make sure that you select `server.js` then type in `npm install` to retrieve all dependencies.
+
+Include `schema.sql` and `seed.sql` in your MySQLWorkbench to pre-populate your database. 
+ 
 
 ## Usage
 ![GIF]() 
