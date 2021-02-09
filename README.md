@@ -34,7 +34,7 @@ Include `schema.sql` and `seed.sql` in your MySQLWorkbench to pre-populate your 
  
 
 ## Usage
-![GIF]() 
+![GIF](employee_track.gif) 
 
 ## Technologies
     Javacript
