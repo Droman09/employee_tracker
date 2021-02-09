@@ -87,7 +87,7 @@ function viewRole() {
 
 
 function viewEmp() {
-    const query = "SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS Manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN employee e ON employee.manager_id = e.id;"
+    const query = "SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(e.first_name, ' ' ,e.last_name) AS manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN employee e ON employee.manager_id = e.id;"
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -139,11 +139,12 @@ function addRole() {
             choices: deptList()
         }]
         ).then(answer => {
+            const deptId = deptList().indexOf(answer.department_id) + 1
             const query = "INSERT INTO role SET ?"
             connection.query(query, {
                 title: answer.role,
                 salary: answer.salary,
-                department_id: answer.department_id
+                department_id: deptId
             }, (err, res) => {
                 if (err) throw err;
                 console.table(res);
@@ -181,7 +182,10 @@ function addEmp() {
             }
         ]).then((answer) => {
             const roleId = roleList().indexOf(answer.newRole) + 1
-            const managerId = managerList().indexOf(answer.assignMan) + 1
+            const managerId = managerList().indexOf(answer.assignMan)
+            if(managerId === "NULL"){
+                return null
+            };
             const query = "INSERT INTO employee SET ?";
             connection.query(query,
                 {
@@ -192,7 +196,7 @@ function addEmp() {
                 },
                 err => {
                     if (err) throw err;
-                    console.log("new employee added");
+                    console.log("new employee added")
                     runOptions();
                 })
         })
@@ -254,7 +258,7 @@ function deptList() {
     connection.query(query, (err, res) => {
         if (err) throw err;
         res.forEach(index => {
-            deptArr.push(index.id)
+            deptArr.push(index.name)
         })
 
     })
@@ -274,13 +278,14 @@ function roleList() {
     return roleArr
 }
 
-var managerArr = ["None"];
+var managerArr = ["NULL"];
 function managerList() {
-    const query = "SELECT *, CONCAT (first_name,' ', last_name) AS name FROM employee WHERE manager_id IS NOT NULL;"
+    const query = "SELECT *, CONCAT (first_name,' ', last_name) AS name FROM employee;"
     connection.query(query, (err, res) => {
         if (err) throw err;
         res.forEach(index => {
-            managerArr.push(index.name)
+            managerArr.push(index.name )
+            
         })
     })
     return managerArr
@@ -288,11 +293,11 @@ function managerList() {
 
 //VALIDATE-----------------------------------------
 
-function validateNum(num) {
-    if (isNaN(num) === false) {
-        return true;
-    } else {
-        console.log("Insesrt a value")
-        return false;
-    };
-};
+// function validateNum(num) {
+//     if (isNaN(num) === false) {
+//         return true;
+//     } else {
+//         console.log("Insesrt a value")
+//         return false;
+//     };
+// };
